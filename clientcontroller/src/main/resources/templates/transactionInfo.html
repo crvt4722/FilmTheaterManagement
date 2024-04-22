@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Info</title>
+
+    <!-- <link rel="stylesheet" href="./assets/css/footer.css"> -->
+    <link rel="stylesheet" href="./assets/css/customer-statistics.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/base.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/main.css">
+    <link rel="stylesheet" type="text/css" href="./assets/fonts/fontawesome-free-6.3.0-web/css/all.min.css">
+
+    <link rel="icon" href="/pictures/logo.jpg" type="image/x-icon" />
+
+    <!-- ReactJs -->
+    <script crossorigin src="https://unpkg.com/react@17.0.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17.0.0/umd/react-dom.production.min.js"></script> 
+    <!-- <script src="./includes/include.js"></script> -->
+</head>
+<body>
+    <div class="header">
+        <div class="header-wrapper">
+        
+            <div class="slogan" >LionelRonaldo Movie Theater</div>            
+            
+            <div class="header-wrapper__icon">
+                <span class="profile-name" style = "background-color: black; font-weight: 500; border-radius: 10px; padding: 5px 5px;">
+                     <i class="fa-solid fa-power-off"></i>
+                </span>
+                
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="main-menu">
+            <div class="main-menu__items">
+                <div class="main-menu__items__img">
+                    <img  src="/pictures/web_name.jpg">
+                </div>
+                <div class="main-menu__item"><a href="/">Trang chủ</a></div>
+                <div class="main-menu__item"><a href="/exchange-giftitem">Đổi điểm khách hàng</a></div>
+                <div class="main-menu__item item--comunity"><a href="/customer-revenue">Thống kê khách hàng theo doanh thu</a></div>
+                <div class="main-menu__item item--shopping"><a href="/room">Cập nhật thông tin ghế ngồi</a></div>
+                           
+                
+            </div>
+    
+            <div class="search-login">
+    
+            </div>
+    
+        </div>    
+    </div>
+
+    <div class="main-container">
+        
+        <div class="input-datetime title">
+            <span>Thông tin giao dịch</span>
+        </div>
+        <!-- <div class="input-datetime">
+            <form class="input-datetime__part" method="post" action="ProcessGetTKKhachHang">
+                <label for="start__time">Mã KH:</label>
+                <input type="datetime" name="start_time" id="" placeholder="yyyy-mm-dd" style="margin-right: 60px;" value="<%=startTime%>">
+                <button type="submit">Tìm kiếm</button>                                
+            </form>            
+        </div> -->
+        
+        <div class="input-datetime total-ammount" style="color: rgb(73, 21, 21); margin-top: 20px; font-size: 16px;" >
+            <label th:if="${session.customer_exchange_gift != null}" th:text = "@{'Mã khách hàng: ' + ${session.customer_exchange_gift.id}}"> </label>
+            <label th:if="${session.customer_exchange_gift != null}" th:text = "@{'Khách hàng: ' + ${session.customer_exchange_gift.fullname}}" style="margin-left: 80px;"> </label>            
+            <label th:if="${session.customer_exchange_gift != null}" th:text = "@{'Điểm hiện tại: ' + ${session.customer_exchange_gift.currentPoint}}" style="margin-left: 80px;"> </label>
+            <label th:if="${session.total_point_needed != null}" th:text = "@{'Tổng điểm cần thiết: ' + ${session.total_point_needed}}" style="margin-left: 80px;"> </label>
+        </div>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Mặt hàng đổi</th>
+                    <th>Điểm cần thiết</th>                    
+                    <th>Số lượng</th>                                     
+                </tr>
+            </thead>
+            <tbody>
+                
+                <form method="post" action="/confirm-transaction">
+                
+                <tr th:if="${session.used_gift_items != null}" th:each="result: ${session.used_gift_items}">
+                    <td th:text="${result.giftItem.name}"></td>
+                    <td th:text="${result.giftItem.neededPoint}"></td>
+                    <td th:text="${result.quantity}"></td>                    
+                </tr>                                
+
+                            
+                
+                <!-- and so on... -->
+            </tbody>            
+        </table>
+        
+        <button type="submit" style="font-size: 16px; margin-left: 1200px; margin-top: 20px;">Xác nhận</button>
+        </form>    
+    </div>
+
+
+
+    <script src="./js/main.js"> </script>
+    <!-- <script src="./js/handle-modal.js"> </script> -->
+    <script src="./js/header.js"> </script>
+    <script>            
+        
+        
+        const logoutBtn = document.querySelector('.fa-power-off')
+
+        logoutBtn.addEventListener('click', (e)=>{
+            e.preventDefault()
+            console.log('logout')
+            let xhr = new XMLHttpRequest()
+            xhr.open('POST', '/LionelRonaldoSupermarket/ProcessLogout', true)
+            xhr.setRequestHeader('Content-Type', 'application/json')
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log(1111)
+                }
+                };
+            xhr.send()
+            
+            setTimeout(()=>{
+                location.reload()
+            },100)
+        })
+        
+        let xhr = new XMLHttpRequest()
+        xhr.open('GET', '/LionelRonaldoSupermarket/ProcessQuanLyTruyCap', true)
+        xhr.setRequestHeader('Content-Type', 'application/json')
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+              let responseMessage = xhr.responseText
+              if (responseMessage == 'DENY') window.location.href = "employeeHome.html"
+            }
+          };
+        xhr.send()
+        
+    </script>
+</body>
+</html>

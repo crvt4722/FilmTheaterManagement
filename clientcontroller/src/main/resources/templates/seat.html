@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat</title>
+
+    <!-- <link rel="stylesheet" href="/css/footer.css"> -->
+    <link rel="stylesheet" href="/css/customer-statistics.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/all.min.css">
+
+    <link rel="icon" href="/pictures/logo.jpg" type="image/x-icon" />
+
+    <!-- ReactJs -->
+    <script crossorigin src="https://unpkg.com/react@17.0.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17.0.0/umd/react-dom.production.min.js"></script> 
+    <!-- <script src="./includes/include.js"></script> -->
+</head>
+<body>
+    <div class="header">
+        <div class="header-wrapper">
+        
+            <div class="slogan" >LionelRonaldo Movie Theater</div>            
+            
+            <div class="header-wrapper__icon">
+                <span class="profile-name" style = "background-color: black; font-weight: 500; border-radius: 10px; padding: 5px 5px;">
+                     <i class="fa-solid fa-power-off"></i>
+                </span>
+                
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="main-menu">
+            <div class="main-menu__items">
+                <div class="main-menu__items__img">
+                    <img  src="/pictures/web_name.jpg">
+                </div>
+                <div class="main-menu__item"><a href="/">Trang chủ</a></div>
+                <div class="main-menu__item"><a href="/exchange-giftitem">Đổi điểm khách hàng</a></div>
+                <div class="main-menu__item item--comunity"><a href="/customer-revenue">Thống kê khách hàng theo doanh thu</a></div>
+                <div class="main-menu__item item--shopping"><a href="/room">Cập nhật thông tin ghế ngồi</a></div>
+                           
+                
+            </div>
+    
+            <div class="search-login">
+    
+            </div>
+    
+        </div>    
+    </div>
+
+    <div class="main-container">
+        
+        <div class="input-datetime title">
+            <span>Seat</span>
+        </div>
+        <div class="input-datetime">
+            <form class="input-datetime__part" method="get" action="/seat/detail">
+                
+                <input type="datetime" name="seat_id" id="" placeholder="Mã ghế" style="margin-right: 60px;" />
+                <button type="submit">Tìm kiếm</button>                                
+            </form>            
+        </div>
+        
+        <table class="styled-table">
+        <!--  <p th:text = "${session.update_seat_response}"></p> -->
+            <thead>
+                <tr>
+                    <th>Mã ghế</th>                    
+                    <th>Vị trí</th>
+                    <th>Loại</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>                
+                <tr th:if="${session.seats != null	}" th:each="result: ${session.seats}">
+	                <form th:action="@{'/seat/update/' + ${result.id}}" th:method="get">
+						<td th:text="${result.id}"></td>						
+						<td><input name="seat_position" th:value ="${result.position}"/></td>
+						<td><input name="seat_type" th:value ="${result.type}"/></td>
+						<td><button type="submit" style="background-color: blue">Cập nhật</button></td>   
+					</form>                  
+                </tr>                                                  
+                
+                <!-- and so on... -->
+            </tbody>            
+        </table>
+    </div>
+
+
+
+    <script src="./js/main.js"> </script>
+    <!-- <script src="./js/handle-modal.js"> </script> -->
+    <script src="./js/header.js"> </script>
+    <script>            
+        
+        
+        const logoutBtn = document.querySelector('.fa-power-off')
+
+        logoutBtn.addEventListener('click', (e)=>{
+            e.preventDefault()
+            console.log('logout')
+            let xhr = new XMLHttpRequest()
+            xhr.open('POST', '/LionelRonaldoSupermarket/ProcessLogout', true)
+            xhr.setRequestHeader('Content-Type', 'application/json')
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log(1111)
+                }
+                };
+            xhr.send()
+            
+            setTimeout(()=>{
+                location.reload()
+            },100)
+        })
+        
+        let xhr = new XMLHttpRequest()
+        xhr.open('GET', '/LionelRonaldoSupermarket/ProcessQuanLyTruyCap', true)
+        xhr.setRequestHeader('Content-Type', 'application/json')
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+              let responseMessage = xhr.responseText
+              if (responseMessage == 'DENY') window.location.href = "employeeHome.html"
+            }
+          };
+        xhr.send()
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Transactions</title>
+
+    <!-- <link rel="stylesheet" href="/css/footer.css"> -->
+    <link rel="stylesheet" href="/css/customer-statistics.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/modal.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/all.min.css">
+
+    <link rel="icon" href="/pictures/logo.jpg" type="image/x-icon" />
+
+    <!-- ReactJs -->
+    <script crossorigin src="https://unpkg.com/react@17.0.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17.0.0/umd/react-dom.production.min.js"></script> 
+    <!-- <script src="./includes/include.js"></script> -->
+</head>
+<body>
+    <div class="header">
+        <div class="header-wrapper">
+        
+            <div class="slogan" >LionelRonaldo Movie Theater</div>             
+            
+            <div class="header-wrapper__icon">
+                <span class="profile-name" style = "background-color: black; font-weight: 500; border-radius: 10px; padding: 5px 5px;">
+                                        
+                     <i class="fa-solid fa-power-off"></i>
+                </span>
+                     
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="main-menu">
+            <div class="main-menu__items">
+                <div class="main-menu__items__img">
+                    <img  src="/pictures/web_name.jpg">
+                </div>
+                <div class="main-menu__item"><a href="/">Trang chủ</a></div>
+                <div class="main-menu__item"><a href="/exchange-giftitem">Đổi điểm khách hàng</a></div>
+                <div class="main-menu__item item--comunity"><a href="/customer-revenue">Thống kê khách hàng theo doanh thu</a></div>
+                <div class="main-menu__item item--shopping"><a href="/room">Cập nhật thông tin ghế ngồi</a></div>
+                           
+                
+            </div>
+    
+            <div class="search-login">
+    
+            </div>
+    
+        </div>    
+    </div>
+
+    <div class="main-container">       
+        <div class="input-datetime title">
+            <span>Chi tiết các lần giao dịch của khách hàng</span>
+        </div>
+        
+        <div class="input-datetime" style="margin-bottom: 10px; border-bottom: 0.1px solid #ccc;">
+            <div class="input-datetime__part chi__tiet">
+                <span th:text="@{'Mã KH: ' + ${session.customer_detail_transaction.id}}"></span> <span style="margin-right: 60px;"></span>                            
+                <span th:text="@{'Tên KH: ' + ${session.customer_detail_transaction.fullname}}"></span> <span style="margin-right: 60px;"></span>
+                <span th:text="@{'Điểm thưởng: ' + ${session.customer_detail_transaction.currentPoint}}"></span> <span style="margin-right: 60px;"></span>
+                <span th:text="@{'Giai đoạn: ' + ${session.customer_detail_transaction.period}}"></span> <span style="margin-right: 60px;"></span>                                                    
+                <span style="color:red" th:text="@{'Tổng chi tiêu: ' + ${session.customer_detail_transaction.revenue}}"></span> <span style="margin-right: 60px;"></span>
+                                
+            </div>            
+        </div>
+
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Mã GD</th>                    
+                    <th>Thời gian GD</th>
+                    <th>Tổng tiền</th>
+                    <th>Vé</th>
+                    <th>Mặt hàng</th>
+                    <th>Mặt hàng đổi điểm</th>
+                    <th>Điểm thưởng</th>
+                    <th>Mã NV thực hiện</th>
+                </tr>
+            </thead>
+            <tbody>
+				
+				<tr th:each="result: ${session.detail_transaction}">                    				
+                    <td th:text="${result.id}" ></td>
+                    <td th:text="${result.paymentTime}"></td>
+                    <td th:text="${result.totalAmount}"></td>   
+                    <td th:text="${result.ticketReturnStr}"></td>           
+                    <td th:text="${result.usedSaleItemReturnStr}"></td>           
+                    <td th:text="${result.usedGiftItemReturnStr}"></td>                       
+                    <td th:text="${result.bonusPoint}"></td>   
+                    <td th:text="${result.employeeId}"></td>                       
+                </tr>               
+                                         
+                <!-- and so on... -->
+            </tbody>
+        </table>
+    </div>
+
+
+    </div>
+
+    <script src="./js/main.js"> </script>
+    <!-- <script src="./js/handle-modal.js"> </script> -->
+    <script src="./js/header.js"> </script>
+    <script>            
+        let xhr = new XMLHttpRequest()
+        xhr.open('GET', '/LionelRonaldoSupermarket/ProcessQuanLyTruyCap', true)
+        xhr.setRequestHeader('Content-Type', 'application/json')
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+              let responseMessage = xhr.responseText
+              if (responseMessage == 'DENY') window.location.href = "employeeHome.html"
+            }
+          };
+        xhr.send()
+        
+        const logoutBtn = document.querySelector('.fa-power-off')
+
+        logoutBtn.addEventListener('click', (e)=>{
+            e.preventDefault()
+            console.log('logout')
+            let xhr = new XMLHttpRequest()
+            xhr.open('POST', '/LionelRonaldoSupermarket/ProcessLogout', true)
+            xhr.setRequestHeader('Content-Type', 'application/json')
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log('Logout')
+                }
+                };
+            xhr.send()
+            
+            setTimeout(()=>{
+                location.reload()
+            },100)
+        })
+        
+        
+        const modalLogin = document.querySelector('.modal.login')            
+        const modalContainerLogin = document.querySelector('.modal-container__login')            
+        const modalCloseLogin = document.querySelector('.modal-close__login')            
+        
+
+
+        function showModal(modal){
+            modal.classList.add('open')
+        }
+
+        function hideModal(modal){
+            modal.classList.remove('open')           
+            if(modalLogin.classList.contains('open') == false){
+          
+            }
+        }                
+        
+        const loginBtns = document.querySelectorAll('.detail-order')
+        loginBtns.forEach(loginBtn =>{             
+            
+            loginBtn.addEventListener('click', (e)=>{
+                console.log(e.target.textContent)     
+                
+                let xhr = new XMLHttpRequest()
+                xhr.open('POST', 'http://localhost:8080/LionelRonaldoSupermarket/ProcessGetChiTietDonHang', true)
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                      console.log(xhr.responseText)         
+                      location.reload()
+//                      showModal.call(this, modalLogin)
+                    }
+                  };
+                  
+                data = "donhangid=" + e.target.textContent
+                xhr.send(data)
+                
+            }) 
+        })
+        
+        
+        modalCloseLogin.addEventListener('click', hideModal.bind(this, modalLogin))
+        modalLogin.addEventListener('click', hideModal.bind(this,modalLogin))            
+        modalContainerLogin.addEventListener('click', (e) => e.stopPropagation())
+        
+        hoaDonId = document.querySelector('.test-id')
+        if(hoaDonId != null)  showModal.call(this, modalLogin)
+    </script>
+</body>
+</html>
